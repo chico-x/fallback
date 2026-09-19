@@ -1,89 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Register Institution - AnimusLens</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animus Lens | Sign Up</title>
   <style>
-    body {
-      background-color: #0f172a;
-      color: #e2e8f0;
-    }
-    .card {
-      background-color: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    }
-    .form-control {
-      background-color: #0f172a;
-      border: 1px solid #334155;
-      color: #f8fafc;
-    }
-    .form-control:focus {
-      background-color: #0f172a;
-      border-color: #38bdf8;
-      color: #f8fafc;
-      box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
-    }
-    .form-control::placeholder {
-      color: #64748b;
-    }
-    .text-muted {
-      color: #94a3b8 !important;
-    }
-    .btn-success {
-      background-color: #16a34a;
-      border: none;
-    }
-    .btn-success:hover {
-      background-color: #15803d;
-    }
-    a {
-      color: #38bdf8;
-    }
-    a:hover {
-      color: #7dd3fc;
+    /* (Your existing CSS from signup.html goes here) */
+    :root { --bg: #0d0d0d; --text: #f8f9fa; --gold-primary: #d4af37; --button: #d4af37; --button-dark: #b98d1f; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); }
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; background: radial-gradient(circle at top, #171717 0%, var(--bg) 60%); }
+    a { color: inherit; text-decoration: none; }
+    .auth-shell { width: min(1100px, 100%); min-height: 620px; display: grid; grid-template-columns: 1.15fr 0.85fr; background: rgba(255, 255, 255, 0.02); border-radius: 30px; padding: 26px 26px 26px 28px; position: relative; box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25); }
+    .promo-panel { position: relative; background: linear-gradient(135deg, rgba(19, 19, 19, 0.95), rgba(30, 22, 9, 0.9)); border-radius: 28px 0 0 28px; overflow: hidden; min-height: 560px; padding: 28px 28px 26px 28px; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid rgba(212, 175, 55, 0.14); }
+    .promo-panel::before, .promo-panel::after { content: ""; position: absolute; background: rgba(212, 175, 55, 0.06); border-radius: 50%; z-index: 0; }
+    .promo-panel::before { width: 360px; height: 360px; right: -140px; top: -80px; }
+    .promo-panel::after { width: 300px; height: 300px; left: -90px; bottom: -120px; }
+    .promo-content { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; padding: 32px 12px 10px 12px; }
+    .promo-copy { max-width: 360px; color: rgba(255,255,255,0.9); margin-bottom: 26px; }
+    .promo-copy h2 { margin: 0; font-size: clamp(2.1rem, 3vw, 3.1rem); line-height: 1.04; letter-spacing: -0.05em; font-weight: 500; max-width: 300px; }
+    .promo-copy p { margin: 18px 0 0; font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.72); }
+    .signin-link { display: inline-block; margin-top: 12px; font-size: 18px; color: #f4f0f0; text-decoration: none; }
+    .signin-link strong { font-weight: 700; }
+    .form-panel { background: rgba(255, 255, 255, 0.96); border-radius: 0 28px 28px 0; padding: 48px 52px 30px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(212, 175, 55, 0.12); }
+    .form-wrap { width: 100%; max-width: 420px; color: #1d1d1d;}
+    h1 { margin: 0 0 24px; font-size: clamp(2.2rem, 2.5vw, 3.1rem); line-height: 1.1; font-weight: 500; letter-spacing: -0.05em; color: #1d1d1d; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; margin-bottom: 8px; font-size: 14px; color: #3a3a3a; font-weight: 500; }
+    input { width: 100%; height: 52px; border: 1px solid rgba(17, 17, 17, 0.12); background: #f8f8f8; border-radius: 10px; padding: 0 14px; font-size: 14px; color: #1d1d1d; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    input::placeholder { color: #9a9a9a; }
+    input:focus { border-color: rgba(212, 175, 55, 0.8); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12); }
+    .submit-btn { width: 100%; height: 52px; border: none; border-radius: 12px; background: linear-gradient(90deg, var(--button), var(--button-dark)); color: #0d0d0d; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; cursor: pointer; box-shadow: 0 12px 24px rgba(212, 175, 55, 0.25); margin-top: 10px; }
+    .divider { display: flex; align-items: center; gap: 18px; margin: 24px 0 18px; color: #888; font-size: 13px; text-transform: lowercase; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(0, 0, 0, 0.1); }
+    .google-btn { width: 100%; height: 52px; border: 1px solid rgba(32, 32, 32, 0.15); border-radius: 12px; background: rgba(255, 255, 255, 0.8); display: flex; align-items: center; justify-content: center; gap: 12px; color: #1d1d1d; font-size: 16px; font-weight: 500; cursor: pointer; }
+    .g-icon { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(#ea4335 0 25%, #fbbd05 25% 50%, #34a853 50% 75%, #4285f4 75% 100%); position: relative; overflow: hidden; }
+    .g-icon::before { content: ""; position: absolute; inset: 5px; background: white; border-radius: 50%; }
+    .g-icon::after { content: ""; position: absolute; width: 11px; height: 11px; background: #4285f4; right: 3px; top: 5px; border-radius: 0 50% 50% 0; }
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+    .alert-danger { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .alert-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    @media (max-width: 900px) {
+      .auth-shell { grid-template-columns: 1fr; padding: 18px; }
+      .promo-panel { min-height: 420px; border-radius: 28px 28px 0 0; }
+      .form-panel { border-radius: 0 0 28px 28px; }
     }
   </style>
 </head>
-<body class="d-flex align-items-center min-vh-100">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-5">
-        <div class="card p-4 border-0 rounded-4">
-          <h3 class="fw-bold text-center mb-1 text-white">Register Institution</h3>
-          <p class="text-muted text-center small mb-4">Set up issuance authority on AnimusLens</p>
-
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }} py-2 small">{{ message }}</div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-
-          <form method="POST" action="{{ url_for('register') }}">
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Institution Name</label>
-              <input type="text" name="name" class="form-control" placeholder="e.g. Nirmala College" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Official Email</label>
-              <input type="email" name="email" class="form-control" placeholder="admin@university.edu" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Password</label>
-              <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-            </div>
-            <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">Create Account</button>
-          </form>
-
-          <div class="text-center mt-3 small text-muted">
-            Already registered? <a href="{{ url_for('login') }}" class="text-decoration-none">Sign in</a>
-          </div>
+<body>
+  <div class="auth-shell">
+    <aside class="promo-panel" aria-label="Brand panel">
+      <div class="promo-content">
+        <div class="promo-copy">
+          <h2>Animus Lens</h2>
+          <p>Pioneering the future of digital trust. Partner with Animus Lens and verify with absolute certainty.</p>
         </div>
+        <a class="signin-link" href="{{ url_for('login') }}"><strong>Already have an account?</strong><br>Sign in</a>
       </div>
-    </div>
+    </aside>
+
+    <main class="form-panel">
+      <div class="form-wrap">
+        <h1>Sign up</h1>
+
+        <!-- Flask Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('register') }}">
+          <!-- Added Name field required by app.py -->
+          <div class="form-group">
+            <label for="name">Institution Name</label>
+            <input id="name" name="name" type="text" placeholder="e.g. Nirmala College" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="Enter your email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Set password</label>
+            <input id="password" name="password" type="password" placeholder="Enter password" required />
+          </div>
+
+          <button class="submit-btn" type="submit">Sign up →</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <button class="google-btn" type="button">
+          <span class="g-icon" aria-hidden="true"></span>
+          <span>Continue with Google</span>
+        </button>
+      </div>
+    </main>
   </div>
 </body>
 </html>

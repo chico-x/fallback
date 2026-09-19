@@ -1,721 +1,342 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}SECURE-CERT - Blockchain Certificate Verification{% endblock %}</title>
+  <title>{% block title %}ANIMUS LENS - Blockchain Certificate Verification{% endblock %}</title>
   
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#6366f1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="SECURE-CERT">
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-  
+  <meta name="theme-color" content="#d4af37">
+
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='animus-logo.png') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-  
-  <!-- Fonts -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='animus_logo.jpeg') }}">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Icons -->
+  <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   
   <!-- AOS Animation -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   
-  <!-- Chart.js for dashboard -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  
-  <!-- Preload critical resources -->
-  <link rel="preload" href="{{ url_for('static', filename='style.css') }}" as="style">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style">
+  <!-- Shared Theme Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.0">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-
-<!-- ==================== LOADING SCREEN ==================== -->
-<div id="loading-screen" class="loading-screen" role="alert" aria-live="polite">
-  <div class="loading-content">
-    <div class="loading-logo">
-      <img src="{{ url_for('static', filename='animus-logo.png') }}" alt="ANIMUS Logo" class="ANIMUS-logo">
-      <span>ANIMUS-Lens</span>
-      <div class="brand-subtext">Blockchain Certificate Verification</div>
+  <!-- ==================== LOADING SCREEN ==================== -->
+  <div id="loading-screen" class="loading-screen" role="alert" aria-live="polite">
+    <div class="loading-content">
+      <div class="loading-logo">
+        <img src="{{ url_for('static', filename='animus_logo.jpeg') }}" alt="Animus Lens Logo" style="height: 32px; margin-right: 8px;">Animus Lens
+        <span>Animus Lens</span>
+        <div class="brand-subtext">Blockchain Certificate Verification</div>
+      </div>
+      <div class="loading-spinner"></div>
+      <p class="text-secondary small">Synchronizing cryptographic integrity...</p>
     </div>
-    <div class="loading-spinner"></div>
-    <p>Loading blockchain security...</p>
   </div>
-</div>
 
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar" id="mainNavbar">
-  <div class="container">
-    <a class="navbar-brand" href="{{ url_for('index') }}">
-      <div class="brand-logo">
-        <img src="{{ url_for('static', filename='animus-logo.png') }}" alt="ANIMUS Logo" class="ANIMUS-logo" style="height: 40px; width: auto; max-height: 100%; object-fit: contain; display: inline-block;">
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar navbar-expand-lg fixed-top custom-navbar" id="mainNavbar">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='animus_logo.jpeg') }}" alt="Animus Lens Logo" style="height: 32px; margin-right: 8px;">
         <div class="brand-text-group">
-          <div class="brand-text">ANIMUS-Lens</div>
+          <div class="brand-text">Animus Lens</div>
           <div class="brand-subtext">Blockchain Certificate Verification</div>
         </div>
-      </div>
-    </a>
+      </a>
 
-    <div class="navbar-actions d-flex align-items-center">
-      <!-- Theme Toggle -->
-      <div class="theme-toggle me-3" id="themeToggle" title="Toggle Dark Mode">
-        <div class="theme-toggle-track">
-          <div class="theme-toggle-thumb">
-            <i class="fas fa-sun"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mobile Menu Toggle -->
-      <button class="navbar-toggler" type="button" id="mobileToggle">
-        <span class="navbar-toggler-icon"></span>
+      <!-- Mobile Menu Toggle Button -->
+      <button class="navbar-toggler border-0 text-warning" type="button" id="mobileToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars fs-4"></i>
       </button>
+
+      <!-- Desktop Navigation Links -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index') }}">
+              <i class="fas fa-home"></i> <span>Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('issue') }}">
+              <i class="fas fa-plus-circle"></i> <span>Issue</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('verify') }}">
+              <i class="fas fa-search"></i> <span>Verify</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contract_info') }}">
+              <i class="fas fa-file-contract"></i> <span>Contract</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/help">
+              <i class="fas fa-question-circle"></i> <span>Help</span>
+            </a>
+          </li>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn hero-btn btn-sm px-3 py-2" href="{{ url_for('verify') }}">
+              <i class="fas fa-shield-alt me-1"></i> Verify Now
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Desktop Navigation -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('index') }}" data-page="home">
-            <i class="fas fa-home"></i> 
-            <span>Home</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('issue') }}" data-page="issue">
-            <i class="fas fa-plus-circle"></i> 
-            <span>Issue</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('verify') }}" data-page="verify">
-            <i class="fas fa-search"></i> 
-            <span>Verify</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" onclick="SECURE_CERT_UI.showInstallPrompt()" id="installBtn" style="display: none;">
-            <i class="fas fa-download"></i> 
-            <span>Install</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/help" onclick="SECURE_CERT_UI.showHelpModal()">
-            <i class="fas fa-question-circle"></i> 
-            <span>Help</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('contract_info') }}">
-            <i class="fas fa-file-contract"></i> 
-            <span>Contract</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-
-  <!-- Mobile Navigation Overlay -->
+  <!-- ==================== MOBILE MENU DRAWER ==================== -->
   <div class="mobile-nav-overlay" id="mobileOverlay"></div>
   
-  <!-- Mobile Navigation Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
-      <div class="brand-logo">
-        <img src="{{ url_for('static', filename='animus-logo.png') }}" alt="ANIMUS Logo" class="ANIMUS -logo">
-        <div class="brand-text-group">
-          <div class="brand-text">ANIMUS-Lens</div>
-          <div class="brand-subtext">Blockchain Certificate Verification</div>
-        </div>
+      <div class="d-flex align-items-center gap-2">
+        <img src="{{ url_for('static', filename='animus_logo.jpeg') }}" alt="Animus Lens Logo" style="height: 32px; margin-right: 8px;">Animus Lens
+        <div class="brand-text fs-5">Animus Lens</div>
       </div>
       <button class="mobile-menu-close" id="mobileClose">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <i class="fa fa-times"></i>
       </button>
     </div>
 
-    
     <nav class="mobile-menu-nav">
       <ul class="mobile-menu-items">
-        <li class="mobile-menu-item">
+        <li>
           <a href="{{ url_for('index') }}" class="mobile-menu-link">
-            <div class="menu-icon">
-              <i class="fas fa-home"></i>
+            <div class="d-flex align-items-center">
+              <i class="fas fa-home menu-icon"></i>
+              <div>
+                <div class="menu-title">Home</div>
+                <div class="menu-subtitle">Overview & Ecosystem</div>
+              </div>
             </div>
-            <div class="menu-content">
-              <span class="menu-title">Home</span><br>
-              <span class="menu-subtitle">Welcome & Overview</span>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
+            <i class="fas fa-chevron-right text-secondary small"></i>
           </a>
         </li>
-        <li class="mobile-menu-item">
+        <li>
           <a href="{{ url_for('issue') }}" class="mobile-menu-link">
-            <div class="menu-icon">
-              <i class="fas fa-plus-circle"></i>
+            <div class="d-flex align-items-center">
+              <i class="fas fa-plus-circle menu-icon"></i>
+              <div>
+                <div class="menu-title">Issue Certificate</div>
+                <div class="menu-subtitle">Register to blockchain</div>
+              </div>
             </div>
-            <div class="menu-content">
-              <span class="menu-title">Issue Certificate</span><br>
-              <span class="menu-subtitle">Create blockchain record</span>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
+            <i class="fas fa-chevron-right text-secondary small"></i>
           </a>
         </li>
-        <li class="mobile-menu-item">
+        <li>
           <a href="{{ url_for('verify') }}" class="mobile-menu-link">
-            <div class="menu-icon">
-              <i class="fas fa-search"></i>
+            <div class="d-flex align-items-center">
+              <i class="fas fa-search menu-icon"></i>
+              <div>
+                <div class="menu-title">Verify Certificate</div>
+                <div class="menu-subtitle">SHA-256 integrity check</div>
+              </div>
             </div>
-            <div class="menu-content">
-              <span class="menu-title">Verify Certificate</span><br>
-              <span class="menu-subtitle">Check authenticity</span>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
+            <i class="fas fa-chevron-right text-secondary small"></i>
           </a>
         </li>
-        <li class="mobile-menu-item">
-          <a href="#" onclick="SECURE_CERT_UI.showInstallPrompt()" class="mobile-menu-link" id="installBtnMobile" style="display: none;">
-            <div class="menu-icon">
-              <i class="fas fa-download"></i>
-            </div>
-            <div class="menu-content">
-              <span class="menu-title">Install App</span><br>
-              <span class="menu-subtitle">Add to your device</span>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-          </a>
-        </li>
-        <li class="mobile-menu-item">
-          <a href="/help" onclick="SECURE_CERT_UI.showHelpModal()" class="mobile-menu-link">
-            <div class="menu-icon">
-              <i class="fas fa-question-circle"></i>
-            </div>
-            <div class="menu-content">
-              <span class="menu-title">Help & Support</span><br>
-              <span class="menu-subtitle">Get assistance</span>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-          </a>
-        </li>
-        <li class="mobile-menu-item">
+        <li>
           <a href="{{ url_for('contract_info') }}" class="mobile-menu-link">
-            <div class="menu-icon">
-              <i class="fas fa-file-contract"></i>
+            <div class="d-flex align-items-center">
+              <i class="fas fa-file-contract menu-icon"></i>
+              <div>
+                <div class="menu-title">Contract Info</div>
+                <div class="menu-subtitle">Smart contract details</div>
+              </div>
             </div>
-            <div class="menu-content">
-              <span class="menu-title">Contract Info</span><br>
-              <span class="menu-subtitle">View Details</span>
+            <i class="fas fa-chevron-right text-secondary small"></i>
+          </a>
+        </li>
+        <li>
+          <a href="/help" class="mobile-menu-link">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-question-circle menu-icon"></i>
+              <div>
+                <div class="menu-title">Help & Docs</div>
+                <div class="menu-subtitle">Guides and FAQ</div>
+              </div>
             </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
+            <i class="fas fa-chevron-right text-secondary small"></i>
           </a>
         </li>
       </ul>
     </nav>
-    
-    <div class="mobile-menu-footer">
-      <div class="theme-toggle-mobile" id="themeToggleMobile">
-        <i class="fas fa-moon"></i>
-        <span>Dark Mode</span>
-        <div class="toggle-switch">
-          <div class="toggle-switch-thumb"></div>
-        </div>
-      </div>
-      
-      <div class="mobile-menu-info">
-        <div class="app-version">v2.1.3</div>
-        <div class="team-badge">Team: Source Code</div>
-      </div>
-    </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Flash Messages -->
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-grow-1" style="padding-top: 80px;">
+    <!-- Flash Messages (Handled Dynamically by Flask) -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="container d-none" id="flash-messages" data-messages="{{ messages | tojson }}">
+        <div class="container mt-4">
           {% for category, message in messages %}
-            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show flash-message" role="alert">
-              <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show flash-alert flash-{{ category }}" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           {% endfor %}
         </div>
       {% endif %}
     {% endwith %}
 
+    <!-- Page Specific Content Injected Here -->
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Back to Top Button -->
+  <!-- ==================== BACK TO TOP ==================== -->
   <button id="back-to-top" class="back-to-top" title="Back to Top">
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <!-- Footer -->
+  <!-- ==================== FOOTER ==================== -->
   <footer class="custom-footer">
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-          <div class="footer-brand">
-            <img src="{{ url_for('static', filename='animus-logo.png') }}" 
-                 alt="ANIMUS Logo" 
-                 style="height: 60px; width: auto; max-width: 180px; object-fit: contain; margin-bottom: 1rem; display: block;">
-            <span>ANIMUS-Lens</span>
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-4 col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <img src="{{ url_for('static', filename='animus_logo.jpeg') }}" alt="Animus Lens Logo" style="height: 32px; margin-right: 8px;">
+            <span class="fs-4 fw-bold gradient-text">Animus Lens</span>
           </div>
-          <p class="footer-text">Blockchain-powered certificate verification system ensuring immutable digital trust.</p>
+          <p class="text-secondary small mb-3">
+            Blockchain-powered certificate verification system providing immutable digital trust and instant auditability.
+          </p>
           <div class="footer-social">
-            <a href="https://github.com/lovnishverma" class="social-link" title="GitHub">
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="https://x.com/lovnishofficial" class="social-link" title="Twitter">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="https://www.youtube.com/@lovnishverma" class="social-link" title="Youtube">
-              <i class="fab fa-youtube"></i>
-            </a>
+            <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
         
-        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-          <h6 class="footer-heading">Quick Links</h6>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Platform Links</h6>
           <ul class="footer-links">
             <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="{{ url_for('issue') }}">Issue Certificate</a></li>
             <li><a href="{{ url_for('verify') }}">Verify Certificate</a></li>
-            <li><a href="/help" onclick="SECURE_CERT_UI.showHelpModal()">Help & Support</a></li>
-            <li><a href="{{ url_for('contract_info') }}">Contract Info</a></li>
+            <li><a href="{{ url_for('contract_info') }}">Contract Architecture</a></li>
+            <li><a href="/help">Support & FAQs</a></li>
           </ul>
         </div>
         
-        <div class="col-lg-4">
-          <div class="team-info-footer">
-            <h6 class="footer-heading">Built by Team Animus</h6>
-            <div class="team-badges">
-              <span class="badge bg-primary">Animus</span>
-              <span class="badge bg-secondary">Blockchain Technology</span>
-            </div>
-            <div class="tech-stack-footer mt-3">
-              <div class="tech-category">
-                <span class="tech-label">Frontend:</span>
-                <span class="tech-badge">Flask</span>
-                <span class="tech-badge">Bootstrap 5</span>
-                <span class="tech-badge">JavaScript</span>
-              </div>
-              <div class="tech-category">
-                <span class="tech-label">Blockchain:</span>
-                <span class="tech-badge">GoChain</span>
-                <span class="tech-badge">Solidity</span>
-                <span class="tech-badge">Web3.py</span>
-              </div>
-            </div>
+        <div class="col-lg-4 col-md-12">
+          <h6 class="footer-heading">Architecture Stack</h6>
+          <div class="mb-2">
+            <span class="text-secondary small d-block mb-1">Decentralized Protocol:</span>
+            <span class="tech-badge">Ethereum</span>
+            <span class="tech-badge">Solidity</span>
+            <span class="tech-badge">SHA-256</span>
+            <span class="tech-badge">Web3.js</span>
+          </div>
+          <div class="mt-3">
+            <span class="text-secondary small d-block mb-1">Design System:</span>
+            <span class="tech-badge">Bootstrap 5</span>
+            <span class="tech-badge">Custom Gold CSS</span>
           </div>
         </div>
       </div>
       
       <hr class="footer-divider">
       
-      <div class="row align-items-center">
-        <div class="col-md-6">
+      <div class="row align-items-center gy-2">
+        <div class="col-md-6 text-center text-md-start">
           <p class="footer-copyright">
-            © 2026 SECURE-CERT. All rights reserved. 
-            <span class="network-info">Running on GoChain Testnet</span>
+            &copy; 2026 Animus Lens. All rights reserved.
           </p>
         </div>
-        <div class="col-md-6 text-md-end">
-          <div class="footer-status">
-            <span class="status-indicator" id="networkStatus">
-              <span class="status-dot"></span>
-              <span class="status-text">Network Status</span>
-            </span>
+        <div class="col-md-6 text-center text-md-end">
+          <div class="status-indicator">
+            <span class="status-dot online" id="statusDot"></span>
+            <span class="text-secondary small" id="networkText">Sepolia Testnet Active</span>
           </div>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Particles Background -->
-  <div id="particles-js" aria-hidden="true"></div>
-
-  <!-- Core Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+HX3UoAu6Zz6r0v7HM2t5UL8zA1s9" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   
-  <!-- Enhanced UI Scripts -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeCore();
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Animation on Scroll
+      AOS.init({ duration: 800, once: true });
 
-    function initializeCore() {
-      if (typeof AOS !== 'undefined') {
-        AOS.init({
-          duration: 800,
-          easing: 'ease-in-out',
-          once: true,
-          offset: 100
+      // 2. Hide Loading Screen
+      const loader = document.getElementById('loading-screen');
+      if (loader) {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.style.display = 'none', 500);
+          }, 300);
         });
       }
 
-      initParticles();
-      initLoadingScreen();
-      initNavigation();
-      initThemeSystem();
-      initBackToTop();
-      initNetworkStatus();
-      convertFlashToToasts();
-      initPWA();
-    }
-
-    function initParticles() {
-      if (typeof particlesJS !== 'undefined') {
-        particlesJS('particles-js', {
-          particles: {
-            number: { 
-              value: window.innerWidth < 768 ? 30 : 50,
-              density: { enable: true, value_area: 800 }
-            },
-            color: { value: '#64ffda' },
-            shape: { 
-              type: 'circle',
-              stroke: { width: 0, color: '#000000' }
-            },
-            opacity: { 
-              value: 0.1,
-              random: true,
-              animation: { enable: true, speed: 1, opacity_min: 0.05 }
-            },
-            size: { 
-              value: 3,
-              random: true,
-              animation: { enable: true, speed: 2, size_min: 0.5 }
-            },
-            line_linked: {
-              enable: true,
-              distance: 150,
-              color: '#64ffda',
-              opacity: 0.05,
-              width: 1
-            },
-            move: {
-              enable: true,
-              speed: 1,
-              direction: 'none',
-              random: true,
-              straight: false,
-              out_mode: 'out',
-              bounce: false
-            }
-          },
-          interactivity: {
-            detect_on: 'canvas',
-            events: {
-              onhover: { enable: true, mode: 'repulse' },
-              onclick: { enable: true, mode: 'push' },
-              resize: true
-            },
-            modes: {
-              repulse: { distance: 100, duration: 0.4 },
-              push: { particles_nb: 2 }
-            }
-          },
-          retina_detect: true
-        });
-      }
-    }
-
-    function initLoadingScreen() {
-      const loadingScreen = document.getElementById('loading-screen');
-      
-      window.addEventListener('load', function() {
-        setTimeout(() => {
-          if (loadingScreen) {
-            loadingScreen.classList.add('fade-out');
-            setTimeout(() => {
-              loadingScreen.style.display = 'none';
-              loadingScreen.setAttribute('aria-hidden', 'true');
-            }, 500);
-          }
-        }, 1000);
-      });
-    }
-
-    function initNavigation() {
+      // 3. Mobile Navigation Drawer Handlers
       const mobileToggle = document.getElementById('mobileToggle');
       const mobileMenu = document.getElementById('mobileMenu');
       const mobileOverlay = document.getElementById('mobileOverlay');
       const mobileClose = document.getElementById('mobileClose');
 
-      function toggleMobileMenu(show) {
-        if (show) {
-          mobileMenu?.classList.add('active');
-          mobileOverlay?.classList.add('active');
-          document.body.classList.add('mobile-menu-open');
-          mobileToggle?.setAttribute('aria-expanded', 'true');
-          mobileMenu?.setAttribute('aria-hidden', 'false');
-          mobileOverlay?.setAttribute('aria-hidden', 'false');
-        } else {
-          mobileMenu?.classList.remove('active');
-          mobileOverlay?.classList.remove('active');
-          document.body.classList.remove('mobile-menu-open');
-          mobileToggle?.setAttribute('aria-expanded', 'false');
-          mobileMenu?.setAttribute('aria-hidden', 'true');
-          mobileOverlay?.setAttribute('aria-hidden', 'true');
-        }
+      function toggleMenu(open) {
+        mobileMenu?.classList.toggle('active', open);
+        mobileOverlay?.classList.toggle('active', open);
       }
 
-      mobileToggle?.addEventListener('click', () => toggleMobileMenu(true));
-      mobileClose?.addEventListener('click', () => toggleMobileMenu(false));
-      mobileOverlay?.addEventListener('click', () => toggleMobileMenu(false));
+      mobileToggle?.addEventListener('click', () => toggleMenu(true));
+      mobileClose?.addEventListener('click', () => toggleMenu(false));
+      mobileOverlay?.addEventListener('click', () => toggleMenu(false));
 
-      document.querySelectorAll('.mobile-menu-link').forEach(link => {
-        link.addEventListener('click', () => toggleMobileMenu(false));
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && mobileMenu?.classList.contains('active')) {
-          toggleMobileMenu(false);
-        }
-      });
-
-      let lastScroll = 0;
-      let ticking = false;
-      
-      function updateNavbar() {
-        const navbar = document.getElementById('mainNavbar');
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
-          navbar?.classList.add('scrolled');
-        } else {
-          navbar?.classList.remove('scrolled');
-        }
-        
-        if (currentScroll > lastScroll && currentScroll > 500) {
-          navbar.style.transform = 'translateY(-100%)';
-        } else {
-          navbar.style.transform = 'translateY(0)';
-        }
-        
-        lastScroll = currentScroll;
-        ticking = false;
-      }
-      
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(updateNavbar);
-          ticking = true;
-        }
-      });
-    }
-
-    function initThemeSystem() {
-      const themeToggle = document.getElementById('themeToggle');
-      const themeToggleMobile = document.getElementById('themeToggleMobile');
-      
-      const savedTheme = localStorage.getItem('SECURE-CERT-theme') || 'dark';
-      applyTheme(savedTheme);
-
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        updateThemeToggle(theme);
-        try {
-          localStorage.setItem('SECURE-CERT-theme', theme);
-        } catch (e) {
-          console.warn('Could not save theme preference:', e);
-        }
-      }
-
-      function updateThemeToggle(theme) {
-        const isDark = theme === 'dark';
-        const icon = themeToggle?.querySelector('i');
-        const mobileIcon = themeToggleMobile?.querySelector('i');
-        
-        if (icon) {
-          icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-        }
-        if (mobileIcon) {
-          mobileIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        
-        themeToggle?.classList.toggle('dark', isDark);
-        themeToggleMobile?.classList.toggle('active', isDark);
-      }
-
-      function toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        applyTheme(newTheme);
-        
-        if (window.SECURE_CERT_UI?.toast) {
-          window.SECURE_CERT_UI.toast.show(
-            `Switched to ${newTheme} mode`, 
-            'info', 
-            2000
-          );
-        }
-      }
-
-      themeToggle?.addEventListener('click', toggleTheme);
-      themeToggleMobile?.addEventListener('click', toggleTheme);
-    }
-
-    function initBackToTop() {
+      // 4. Back To Top Button Behavior
       const backToTop = document.getElementById('back-to-top');
-      let ticking = false;
-      
-      function updateBackToTop() {
-        if (window.pageYOffset > 300) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
           backToTop?.classList.add('visible');
         } else {
           backToTop?.classList.remove('visible');
-        }
-        ticking = false;
-      }
-      
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(updateBackToTop);
-          ticking = true;
         }
       });
 
       backToTop?.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-    }
 
-    function initNetworkStatus() {
-      const statusElement = document.getElementById('networkStatus');
-      const statusDot = statusElement?.querySelector('.status-dot');
-      const statusText = statusElement?.querySelector('.status-text');
-      
-      async function updateNetworkStatus() {
-        const isOnline = navigator.onLine && await checkBlockchain();
-        if (statusDot && statusText) {
-          if (isOnline) {
-            statusDot.className = 'status-dot online';
-            statusText.textContent = 'GoChain Connected';
-          } else {
-            statusDot.className = 'status-dot offline';
-            statusText.textContent = 'GoChain Offline';
-          }
+      // 5. Network Status Monitor
+      const statusDot = document.getElementById('statusDot');
+      const networkText = document.getElementById('networkText');
+
+      function updateNetStatus() {
+        if (navigator.onLine) {
+          statusDot.className = 'status-dot online';
+          networkText.textContent = 'Sepolia Testnet Active';
+        } else {
+          statusDot.className = 'status-dot offline';
+          networkText.textContent = 'Network Disconnected';
         }
       }
 
-      updateNetworkStatus();
-      window.addEventListener('online', updateNetworkStatus);
-      window.addEventListener('offline', updateNetworkStatus);
-      setInterval(updateNetworkStatus, 15000);
-    }
-
-    function convertFlashToToasts() {
-      const flashContainer = document.getElementById('flash-messages');
-      if (!flashContainer) return;
-      
-      try {
-        const messages = JSON.parse(flashContainer.dataset.messages || '[]');
-        messages.forEach(([category, message]) => {
-          const type = category === 'error' ? 'error' : 'success';
-          setTimeout(() => {
-            if (window.SECURE_CERT_UI?.toast) {
-              window.SECURE_CERT_UI.toast.show(message, type, 5000);
-            }
-          }, 1000);
-        });
-      } catch (e) {
-        console.warn('Could not parse flash messages:', e);
-      }
-    }
-
-    function initPWA() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-          .catch(error => {
-            console.log('SW registration skipped or failed:', error);
-          });
-      }
-    }
-
-    window.addEventListener('error', function(e) {
-      console.error('Global error:', e);
+      window.addEventListener('online', updateNetStatus);
+      window.addEventListener('offline', updateNetStatus);
+      updateNetStatus();
     });
-
-    window.SECURE_CERT_UI = window.SECURE_CERT_UI || {};
-    
-    // Check GoChain Node Connectivity
-    async function checkBlockchain() {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-        
-        const response = await fetch("http://127.0.0.1:8545", { 
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            method: "eth_blockNumber",
-            params: [],
-            id: 1
-          }),
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        return response.ok;
-      } catch (error) {
-        return false;
-      }
-    }
-    
-    window.checkBlockchain = checkBlockchain;
   </script>
 
+  <!-- Page Specific Scripts Injected Here -->
   {% block scripts %}{% endblock %}
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        if (!window.SECURE_CERT_UI) {
-          window.SECURE_CERT_UI = {
-            showInstallPrompt: function() {},
-            showHelpModal: function() {},
-            toast: {
-              show: function(message, type, duration) {
-                console.log(`Toast: ${message} (${type})`);
-              }
-            }
-          };
-        }
-      }, 100);
-    });
-  </script>
 
 </body>
 </html>

@@ -1,218 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify Certificate - ANIMUS</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: #0f172a;
-      color: #e2e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .navbar {
-      background: #1e293b;
-      padding: 1rem 2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .navbar a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 1.25rem;
-    }
-    .verify-wrap {
-      max-width: 760px;
-      margin: 2.5rem auto;
-      padding: 0 1rem;
-      width: 100%;
-    }
-    .verify-card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 2rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      margin-bottom: 2rem;
-    }
-    h2, h3, h4 { color: #f8fafc; }
-    p.subtitle { color: #94a3b8; text-align: center; margin-bottom: 1.75rem; font-size: 0.95rem; }
-    .form-group { margin-bottom: 1.25rem; }
-    label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.9rem; }
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #f8fafc;
-      outline: none;
-    }
-    .form-input:focus { border-color: #38bdf8; }
-    .btn-submit {
-      width: 100%;
-      padding: 0.85rem;
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .btn-submit:hover { background: #1d4ed8; }
-    .meta-box {
-      background: #0f172a;
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid #334155;
-      word-break: break-all;
-    }
-    .meta-row { margin-bottom: 0.75rem; font-size: 0.95rem; }
-    .meta-row:last-child { margin-bottom: 0; }
-    .meta-row strong { color: #94a3b8; }
-    .forensic-panel {
-      background: rgba(56, 189, 248, 0.06);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 8px;
-      padding: 1.25rem;
-    }
-    .score-high { background: #16a34a; color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
-    .score-med  { background: #eab308; color: #000; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
-    .score-low  { background: #dc2626; color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
-    .text-valid   { color: #4ade80; }
-    .text-invalid { color: #f87171; }
-    
-    /* Flash alert banners */
-    .flash-alert {
-      padding: 1rem 1.25rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .flash-danger {
-      background: rgba(220, 38, 38, 0.2);
-      border: 1px solid #ef4444;
-      color: #fca5a5;
-    }
-    .flash-warning {
-      background: rgba(234, 179, 8, 0.2);
-      border: 1px solid #eab308;
-      color: #fef08a;
-    }
-  </style>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block title %}Verify Certificate - SECURE-Cert{% endblock %}
+{% block content %}
 
-  <nav class="navbar">
-    <a href="/"><i class="fas fa-certificate me-2"></i>AnimusLens</a>
-  </nav>
+<!-- Hero Header with 3D Animated Background -->
+<section class="animation-hero position-relative">
+  <div class="animation-bg">
+    <div class="icontainer">
+      <div class="holder"><div class="box"></div></div>
+      <div class="holder"><div class="box"></div></div>
+      <div class="holder"><div class="box"></div></div>
+    </div>
+  </div>
 
-  <div class="verify-wrap">
+  <div class="container text-center hero-content position-relative" style="z-index: 2;">
+    <div class="hero-badge" data-aos="fade-down">
+      <i class="fas fa-search me-2"></i>Trust Verification
+    </div>
+    <h1 class="hero-title" data-aos="fade-up">Verify Certificate</h1>
+    <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">
+      Verify certificate authenticity against the blockchain & execute forensic checks.
+    </p>
+  </div>
+</section>
 
-    <!-- Flash message display container -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash-alert flash-{{ category }}">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>{{ message }}</div>
+<!-- Verification Form Section -->
+<main class="py-5">
+  <div class="container verify-wrap">
+
+    <!-- Form Card -->
+    <div class="verify-card" data-aos="fade-up">
+      <div class="text-center mb-4">
+        <div class="form-icon mb-2">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2 class="h3 fw-bold text-light">Audit Document</h2>
+        <p class="text-secondary small">Provide the certificate identifier and document to validate authenticity.</p>
+      </div>
+
+      <!-- Posts form data to Flask Backend for Validation -->
+      <form id="verifyForm" method="POST" action="{{ url_for('verify') }}" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label" for="cert_id">
+            <i class="fas fa-tag me-1"></i> Certificate ID
+          </label>
+          <!-- Restores previously submitted ID if applicable -->
+          <input type="text" name="cert_id" class="form-control custom-input" id="cert_id" placeholder="e.g. CERT-2026-ETH-001" value="{{ cert_id if cert_id else '' }}">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">
+            <i class="fas fa-file-upload me-1"></i> Certificate Document (PDF, PNG, JPG)
+          </label>
+          <div class="file-upload-area" id="verifyUploadArea" role="button" tabindex="0">
+            <input type="file" name="file" id="verifyFileInput" class="d-none" accept=".pdf,.png,.jpg,.jpeg" required>
+            <div class="file-upload-content">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+              <p class="mb-1 text-light fw-medium">Drag & drop or click to upload</p>
+              <div class="file-types">Supported formats: PDF, PNG, JPG, JPEG</div>
+            </div>
           </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
 
-    <div class="verify-card">
-      <h2 style="text-align: center; margin-bottom: 0.5rem;">
-        <i class="fas fa-shield-alt text-primary"></i> Verify Certificate
-      </h2>
-      <p class="subtitle">
-        Upload the certificate and enter its ID to verify authenticity against the blockchain registry and visual AI forensics.
-      </p>
-
-      <form method="POST" action="{{ url_for('verify') }}" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="cert_id">Certificate ID</label>
-          <input type="text" class="form-input" id="cert_id" name="cert_id" placeholder="e.g. 201" value="{{ cert_id if cert_id else '' }}">
+          <!-- File selection badge -->
+          <div class="file-preview mt-3" id="verifyFilePreview" style="display: none;">
+            <div class="file-info">
+              <i class="fas fa-file-alt text-warning me-2"></i>
+              <span class="file-name text-light fw-medium" id="previewFileName"></span>
+            </div>
+            <button type="button" class="btn-remove" onclick="clearVerifyFile()" aria-label="Remove uploaded file">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="file">Certificate Document (PDF, PNG, JPG)</label>
-          <input type="file" class="form-input" id="file" name="file" accept=".pdf,.png,.jpg,.jpeg" required>
-        </div>
-
-        <button type="submit" class="btn-submit">
-          <i class="fas fa-search"></i> Verify Certificate
+        <button type="submit" class="btn hero-btn w-100 py-3" id="verifySubmitBtn" disabled>
+          <i class="fas fa-search me-2"></i> Verify on Blockchain
         </button>
       </form>
+
+      <!-- Dynamic Process Overlay (Handled by JS during form submission) -->
+      <div class="processing-overlay" id="verifyOverlay" style="display: none;">
+        <div class="processing-content text-center">
+          <div class="spinner mb-3"></div>
+          <h4 class="text-light fw-bold">Authenticating Document</h4>
+          <p class="text-secondary small">Computing SHA-256 and checking ledger records...</p>
+        </div>
+      </div>
     </div>
 
+    <!-- Verification Result Card (Populated by Flask response data) -->
     {% if result %}
-    <div class="verify-card">
-      <h3 style="text-align: center; margin-bottom: 1.5rem;" class="{% if match and not revoked %}text-valid{% else %}text-invalid{% endif %}">
+    <div class="verify-card" id="resultCard" data-aos="fade-up">
+      
+      <!-- Status Header -->
+      <h3 class="text-center mb-4 fw-bold {% if match and not revoked %}text-valid{% else %}text-invalid{% endif %}">
         {% if match and not revoked %}
-          <i class="fas fa-check-circle"></i> Certificate Verified & Valid
+          <i class="fas fa-check-circle me-2"></i> Certificate Verified & Valid
         {% elif revoked %}
-          <i class="fas fa-ban"></i> Certificate Has Been Revoked
+          <i class="fas fa-ban me-2"></i> Certificate Has Been Revoked
         {% else %}
-          <i class="fas fa-times-circle"></i> Verification Failed / Tampered
+          <i class="fas fa-times-circle me-2"></i> Verification Failed / Tampered
         {% endif %}
       </h3>
 
+      <!-- Metadata Breakdown -->
       <div class="meta-box">
-        <div class="meta-row"><strong>Certificate ID:</strong> {{ cert_id }}</div>
-        <div class="meta-row"><strong>Uploaded SHA-256:</strong><br><code>{{ uploaded_hash }}</code></div>
-        <div class="meta-row"><strong>Blockchain SHA-256:</strong><br><code>{{ onchain_hash if onchain_hash else "Not found on-chain" }}</code></div>
-        <div class="meta-row"><strong>Status:</strong>
+        <div class="meta-row">
+          <strong>Certificate ID:</strong>
+          <span class="text-light ms-1">{{ cert_id }}</span>
+        </div>
+        <div class="meta-row">
+          <strong>Uploaded File SHA-256:</strong><br>
+          <code>{{ uploaded_hash }}</code>
+        </div>
+        <div class="meta-row">
+          <strong>Blockchain Ledger Record:</strong><br>
+          <code>{{ onchain_hash if onchain_hash else "Not found on-chain" }}</code>
+        </div>
+        <div class="meta-row mt-3">
+          <strong>Ledger Status:</strong>
           {% if revoked %}
-            <span class="text-invalid" style="font-weight: bold;">Revoked</span>
+            <span class="text-invalid fw-bold ms-1">Revoked</span>
           {% elif match %}
-            <span class="text-valid" style="font-weight: bold;">Active & Verified</span>
+            <span class="text-valid fw-bold ms-1">Active & Valid</span>
           {% else %}
-            <span class="text-invalid" style="font-weight: bold;">Invalid Record</span>
+            <span class="text-invalid fw-bold ms-1">Invalid Record</span>
           {% endif %}
         </div>
       </div>
 
+      <!-- AI Forensics Panel (Populated by cert_utils.py output) -->
       {% if ai_data %}
-      <div class="forensic-panel">
-        <h4 style="color: #38bdf8; margin-bottom: 1rem;">
-          <i class="fas fa-robot"></i> AI Forensic Verification
+      <div class="forensic-panel mt-4">
+        <h4 class="h5 gradient-text mb-3">
+          <i class="fas fa-robot me-2"></i> AI Forensic Verification
         </h4>
 
-        <div class="meta-row">
-          <strong>AI Integrity Score:</strong>
-          <span class="{% if ai_data.confidence_score >= 80 %}score-high{% elif ai_data.confidence_score >= 50 %}score-med{% else %}score-low{% endif %}">
+        <div class="meta-row d-flex justify-content-between align-items-center">
+          <span><strong>AI Integrity Score:</strong></span>
+          <span class="score-badge">
             {{ ai_data.confidence_score }}% Confirmed
           </span>
         </div>
 
-        <div class="meta-row">
-          <strong>Visual Tampering:</strong>
+        <div class="meta-row d-flex justify-content-between align-items-center mt-2">
+          <span><strong>Visual Tampering:</strong></span>
           {% if ai_data.tampering_detected %}
-            <span class="text-invalid" style="font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> Tampering Detected</span>
+            <span class="text-invalid fw-semibold">
+              <i class="fas fa-exclamation-triangle me-1"></i> Tampering Detected
+            </span>
           {% else %}
-            <span class="text-valid" style="font-weight: 600;"><i class="fas fa-check-circle"></i> Clean</span>
+            <span class="text-valid fw-semibold">
+              <i class="fas fa-check-circle me-1"></i> Clean (No Splicing Detected)
+            </span>
           {% endif %}
         </div>
 
         {% if ai_data.flagged_fields %}
-        <div style="margin-top: 0.75rem;">
-          <strong style="color: #eab308;">Forensic Observations:</strong>
-          <ul style="color: #cbd5e1; margin: 0.35rem 0 0 1.25rem; font-size: 0.9rem;">
+        <div class="mt-3 pt-3 border-top border-secondary border-opacity-25">
+          <strong class="d-block mb-1 text-light">Forensic Observations:</strong>
+          <ul class="text-secondary small mb-0 ps-3">
             {% for flag in ai_data.flagged_fields %}
               <li>{{ flag }}</li>
             {% endfor %}
@@ -224,7 +170,86 @@
 
     </div>
     {% endif %}
-  </div>
 
-</body>
-</html>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // DOM Elements
+  const certIdInput = document.getElementById('cert_id');
+  const fileInput = document.getElementById('verifyFileInput');
+  const uploadArea = document.getElementById('verifyUploadArea');
+  const filePreview = document.getElementById('verifyFilePreview');
+  const previewFileName = document.getElementById('previewFileName');
+  const submitBtn = document.getElementById('verifySubmitBtn');
+  const verifyForm = document.getElementById('verifyForm');
+  const overlay = document.getElementById('verifyOverlay');
+  const resultCard = document.getElementById('resultCard');
+
+  // If a result card exists on page load (from Flask rendering), scroll to it
+  if(resultCard) {
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Validate form state
+  function checkFormValidity() {
+    const hasFile = fileInput.files.length > 0;
+    // certId logic depends on whether it's strictly required by the backend, 
+    // but the original form allowed empty inputs if OCR finds it
+    submitBtn.disabled = !hasFile; 
+  }
+
+  // Trigger file dialog on clicking upload area
+  uploadArea.addEventListener('click', () => fileInput.click());
+
+  // Handle file selection
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      previewFileName.textContent = e.target.files[0].name;
+      filePreview.style.display = 'flex';
+      uploadArea.classList.add('active');
+      checkFormValidity();
+    } else {
+      clearVerifyFile();
+    }
+  });
+
+  // Handle Drag and Drop
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('active');
+  });
+
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('active');
+  });
+
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('active');
+    if (e.dataTransfer.files.length) {
+      fileInput.files = e.dataTransfer.files;
+      fileInput.dispatchEvent(new Event('change'));
+    }
+  });
+
+  // Clear file selection
+  function clearVerifyFile() {
+    fileInput.value = '';
+    filePreview.style.display = 'none';
+    uploadArea.classList.remove('active');
+    checkFormValidity();
+  }
+
+  // Show processing overlay when submitting the form to Flask
+  verifyForm.addEventListener('submit', () => {
+      overlay.style.display = 'flex';
+  });
+
+  // Re-check validity if certificate ID changes manually
+  certIdInput.addEventListener('input', checkFormValidity);
+
+</script>
+{% endblock %}
