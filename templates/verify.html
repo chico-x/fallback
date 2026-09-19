@@ -2,6 +2,25 @@
 {% block title %}Verify Certificate - SECURE-Cert{% endblock %}
 {% block content %}
 
+<style>
+  .badge-valid-style {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid #10b981;
+  }
+  .badge-invalid-style {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+  }
+</style>
+
 <!-- Hero Header with 3D Animated Background -->
 <section class="animation-hero position-relative">
   <div class="animation-bg">
@@ -43,8 +62,7 @@
           <label class="form-label" for="cert_id">
             <i class="fas fa-tag me-1"></i> Certificate ID
           </label>
-          <!-- Restores previously submitted ID if applicable -->
-          <input type="text" name="cert_id" class="form-control custom-input" id="cert_id" placeholder="e.g. CERT-2026-ETH-001" value="{{ cert_id if cert_id else '' }}">
+          <input type="text" name="cert_id" class="form-control custom-input" id="cert_id" placeholder="e.g. CERT-101" value="{{ cert_id if cert_id else '' }}" required>
         </div>
 
         <div class="mb-4">
@@ -77,7 +95,7 @@
         </button>
       </form>
 
-      <!-- Dynamic Process Overlay (Handled by JS during form submission) -->
+      <!-- Dynamic Process Overlay -->
       <div class="processing-overlay" id="verifyOverlay" style="display: none;">
         <div class="processing-content text-center">
           <div class="spinner mb-3"></div>
@@ -87,12 +105,12 @@
       </div>
     </div>
 
-    <!-- Verification Result Card (Populated by Flask response data) -->
+    <!-- Verification Result Card -->
     {% if result %}
-    <div class="verify-card" id="resultCard" data-aos="fade-up">
+    <div class="verify-card mt-4" id="resultCard" data-aos="fade-up">
       
       <!-- Status Header -->
-      <h3 class="text-center mb-4 fw-bold {% if match and not revoked %}text-valid{% else %}text-invalid{% endif %}">
+      <h3 class="text-center mb-4 fw-bold {% if match and not revoked %}text-success{% else %}text-danger{% endif %}">
         {% if match and not revoked %}
           <i class="fas fa-check-circle me-2"></i> Certificate Verified & Valid
         {% elif revoked %}
@@ -119,16 +137,16 @@
         <div class="meta-row mt-3">
           <strong>Ledger Status:</strong>
           {% if revoked %}
-            <span class="text-invalid fw-bold ms-1">Revoked</span>
+            <span class="text-danger fw-bold ms-1">Revoked</span>
           {% elif match %}
-            <span class="text-valid fw-bold ms-1">Active & Valid</span>
+            <span class="text-success fw-bold ms-1">Active & Valid</span>
           {% else %}
-            <span class="text-invalid fw-bold ms-1">Invalid Record</span>
+            <span class="text-danger fw-bold ms-1">Invalid Record</span>
           {% endif %}
         </div>
       </div>
 
-      <!-- AI Forensics Panel (Populated by cert_utils.py output) -->
+      <!-- AI Forensics Panel -->
       {% if ai_data %}
       <div class="forensic-panel mt-4">
         <h4 class="h5 gradient-text mb-3">
@@ -137,19 +155,25 @@
 
         <div class="meta-row d-flex justify-content-between align-items-center">
           <span><strong>AI Integrity Score:</strong></span>
-          <span class="score-badge">
-            {{ ai_data.confidence_score }}% Confirmed
-          </span>
+          {% if match and not revoked %}
+            <span class="score-badge badge-valid-style">
+              {{ ai_data.confidence_score }}% Confirmed Authentic
+            </span>
+          {% else %}
+            <span class="score-badge badge-invalid-style">
+              {{ ai_data.confidence_score }}% Untrusted / Unverified
+            </span>
+          {% endif %}
         </div>
 
         <div class="meta-row d-flex justify-content-between align-items-center mt-2">
           <span><strong>Visual Tampering:</strong></span>
           {% if ai_data.tampering_detected %}
-            <span class="text-invalid fw-semibold">
+            <span class="text-danger fw-semibold">
               <i class="fas fa-exclamation-triangle me-1"></i> Tampering Detected
             </span>
           {% else %}
-            <span class="text-valid fw-semibold">
+            <span class="text-success fw-semibold">
               <i class="fas fa-check-circle me-1"></i> Clean (No Splicing Detected)
             </span>
           {% endif %}
@@ -177,7 +201,6 @@
 
 {% block scripts %}
 <script>
-  // DOM Elements
   const certIdInput = document.getElementById('cert_id');
   const fileInput = document.getElementById('verifyFileInput');
   const uploadArea = document.getElementById('verifyUploadArea');
@@ -188,23 +211,18 @@
   const overlay = document.getElementById('verifyOverlay');
   const resultCard = document.getElementById('resultCard');
 
-  // If a result card exists on page load (from Flask rendering), scroll to it
   if(resultCard) {
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // Validate form state
   function checkFormValidity() {
     const hasFile = fileInput.files.length > 0;
-    // certId logic depends on whether it's strictly required by the backend, 
-    // but the original form allowed empty inputs if OCR finds it
-    submitBtn.disabled = !hasFile; 
+    const hasId = certIdInput.value.trim().length > 0;
+    submitBtn.disabled = !(hasFile && hasId);
   }
 
-  // Trigger file dialog on clicking upload area
   uploadArea.addEventListener('click', () => fileInput.click());
 
-  // Handle file selection
   fileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
       previewFileName.textContent = e.target.files[0].name;
@@ -216,7 +234,6 @@
     }
   });
 
-  // Handle Drag and Drop
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('active');
@@ -235,7 +252,6 @@
     }
   });
 
-  // Clear file selection
   function clearVerifyFile() {
     fileInput.value = '';
     filePreview.style.display = 'none';
@@ -243,13 +259,10 @@
     checkFormValidity();
   }
 
-  // Show processing overlay when submitting the form to Flask
   verifyForm.addEventListener('submit', () => {
       overlay.style.display = 'flex';
   });
 
-  // Re-check validity if certificate ID changes manually
   certIdInput.addEventListener('input', checkFormValidity);
-
 </script>
-{% endblock %}
+{% endblock %} 
